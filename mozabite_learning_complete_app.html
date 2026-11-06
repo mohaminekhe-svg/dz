@@ -1,0 +1,982 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>MOZABITE – Learn & Connect (LinguaFlow)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#4338ca">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #f6f6fb;
+      --sf: #ffffff;
+      --tx: #1d1b3a;
+      --mu: #6b6890;
+      --bd: #e3e2f1;
+      --pr: #4338ca;
+      --pr2: #e8e6fb;
+      --tq: #0d9488;
+      --ok: #16a34a;
+      --or: #ea580c;
+      --c-ar: #4338ca;
+      --c-fr: #0d9488;
+      --c-en: #b45309;
+      --c-mz: #be185d;
+      color-scheme: light;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #12111f;
+        --sf: #1c1a31;
+        --tx: #edebff;
+        --mu: #a09cc8;
+        --bd: #2f2c4d;
+        --pr: #8b83f5;
+        --pr2: #2a2750;
+        --tq: #2dd4bf;
+        --c-ar: #9b94ff;
+        --c-fr: #2dd4bf;
+        --c-en: #f5b25b;
+        --c-mz: #f472b6;
+        color-scheme: dark;
+      }
+    }
+
+    :root[data-theme="dark"] {
+      --bg: #12111f;
+      --sf: #1c1a31;
+      --tx: #edebff;
+      --mu: #a09cc8;
+      --bd: #2f2c4d;
+      --pr: #8b83f5;
+      --pr2: #2a2750;
+      --tq: #2dd4bf;
+      --c-ar: #9b94ff;
+      --c-fr: #2dd4bf;
+      --c-en: #f5b25b;
+      --c-mz: #f472b6;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--tx);
+      font: 400 16px/1.55 "Readex Pro", system-ui, sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; color: inherit; }
+
+    #app {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: var(--sf);
+      border-inline-end: 1px solid var(--bd);
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 20px;
+      padding: 4px 12px 18px;
+      color: var(--pr);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nb {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 0;
+      background: none;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: start;
+      min-height: 44px;
+      color: var(--mu);
+    }
+
+    .nb.on {
+      background: var(--pr2);
+      color: var(--pr);
+      font-weight: 600;
+    }
+
+    .nb[disabled] { opacity: .5; cursor: default; }
+    .nb small { margin-inline-start: auto; font-size: 11px; }
+
+    svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: none;
+    }
+
+    main {
+      padding: 28px clamp(16px, 4vw, 44px);
+      max-width: 980px;
+      width: 100%;
+    }
+
+    h1 { font-size: 26px; margin: 0 0 12px; font-weight: 700; }
+    h2 { font-size: 18px; margin: 24px 0 12px; font-weight: 600; }
+
+    .card {
+      background: var(--sf);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(40, 30, 120, .06);
+    }
+
+    .msg {
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 8px 0 22px;
+      max-width: 35ch;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .st b { display: block; font-size: 28px; font-weight: 700; }
+    .st span { color: var(--mu); font-size: 13px; }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 120px 1fr 40px;
+      align-items: center;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .bar {
+      height: 10px;
+      border-radius: 99px;
+      background: var(--pr2);
+      overflow: hidden;
+    }
+
+    .bar i { display: block; height: 100%; border-radius: 99px; }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-height: 44px;
+      cursor: pointer;
+      background: var(--pr);
+      color: #fff;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn.g { background: var(--pr2); color: var(--pr); }
+    .btn.d { background: var(--or); color: #fff; }
+    .btn.sm { padding: 8px 14px; min-height: 36px; font-size: 13px; border-radius: 10px; }
+
+    .btn:focus-visible, .nb:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--tq);
+      outline-offset: 2px;
+    }
+
+    .bar2 {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+
+    .bar2 input, .bar2 select, .f input, .f select, .f textarea {
+      border: 1px solid var(--bd);
+      background: var(--sf);
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-height: 44px;
+      width: 100%;
+    }
+
+    .bar2 input { flex: 1 1 220px; width: auto; }
+    .bar2 select { width: auto; }
+
+    .it { margin-bottom: 12px; }
+    .it .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .tr {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--bd);
+      unicode-bidi: isolate;
+    }
+
+    .tr:last-of-type { border: 0; }
+    .tr .ln { font-size: 12px; font-weight: 600; min-width: 80px; flex: none; }
+    .tr .tx { font-size: 17px; unicode-bidi: isolate; overflow-wrap: anywhere; }
+    .tr .pn { font-size: 13px; color: var(--mu); unicode-bidi: isolate; }
+
+    .chip {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: var(--pr2);
+      color: var(--pr);
+      font-weight: 500;
+    }
+
+    .chip.w { background: #ffedd5; color: #9a3412; }
+    .empty { text-align: center; padding: 48px 16px; }
+    .empty h2 { margin-top: 0; }
+
+    dialog {
+      border: 0;
+      border-radius: 18px;
+      padding: 0;
+      width: min(640px, 94vw);
+      max-height: 92vh;
+      background: var(--sf);
+      color: var(--tx);
+    }
+
+    dialog::backdrop { background: rgba(10, 8, 40, .5); }
+    .dl { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+
+    .f label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .f { display: block; }
+    .lb { border: 1px solid var(--bd); border-radius: 14px; padding: 12px; }
+    .lb details { margin-top: 6px; }
+    .lb summary { cursor: pointer; color: var(--mu); font-size: 13px; }
+
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .err { color: var(--or); font-size: 14px; min-height: 20px; }
+    .hint { color: var(--mu); font-size: 13px; }
+    textarea { resize: vertical; }
+
+    .banner {
+      background: #ffedd5;
+      color: #9a3412;
+      padding: 10px 14px;
+      border-radius: 12px;
+      margin-bottom: 14px;
+    }
+
+    .top-streak-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--sf);
+      border: 1px solid var(--bd);
+      padding: 12px 16px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 1px 3px rgba(40, 30, 120, .04);
+    }
+
+    .streak-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--or);
+      font-size: 16px;
+    }
+
+    .streak-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .day-banner { border-top: 4px solid var(--pr); margin-bottom: 20px; }
+
+    .day-status-pill {
+      background: #dcfce7;
+      color: #15803d;
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .quiz-card {
+      background: var(--sf);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 24px;
+      margin-top: 16px;
+    }
+
+    .quiz-q-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 16px 0;
+      color: var(--pr);
+    }
+
+    @media (max-width: 859px) {
+      #app { display: block; }
+      main { padding-bottom: 96px; }
+      nav {
+        position: fixed;
+        inset: auto 0 0 0;
+        height: auto;
+        flex-direction: row;
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+        border-inline-end: 0;
+        border-top: 1px solid var(--bd);
+        z-index: 5;
+      }
+      .logo, .nb small { display: none; }
+      .nb {
+        flex: 1;
+        flex-direction: column;
+        gap: 2px;
+        font-size: 11px;
+        padding: 6px 2px;
+        justify-content: center;
+        text-align: center;
+      }
+      .fab { inset-block-end: 84px; }
+      .two { grid-template-columns: 1fr; }
+    }
+
+    .fab {
+      position: fixed;
+      inset-inline-end: 18px;
+      inset-block-end: 24px;
+      z-index: 4;
+      box-shadow: 0 6px 18px rgba(67, 56, 202, .35);
+      border-radius: 99px;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .bar i { transition: width .5s; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <dialog id="dlg"></dialog>
+
+  <script>
+    const LG=['ar','fr','en','mz'], DIR={ar:'rtl',fr:'ltr',en:'ltr',mz:'ltr'}, IX={ar:0,fr:1,en:2};
+    const NM={
+      ar:{ar:'العربية',fr:'الفرنسية',en:'الإنجليزية',mz:'المزابية Tumẓabt'},
+      fr:{ar:'Arabe',fr:'Français',en:'Anglais',mz:'Mozabite Tumẓabt'},
+      en:{ar:'Arabic',fr:'French',en:'English',mz:'Mozabite Tumẓabt'}
+    };
+
+    const D={
+      dash:['الرئيسية','Accueil','Home'],
+      vocab:['مفرداتي','Mon vocabulaire','My vocabulary'],
+      quiz:['اختبر نفسك','Quiz','Quiz'],
+      stats:['إحصائياتي','Statistiques','Stats'],
+      set:['الإعدادات','Réglages','Settings'],
+      soon:['قريبًا','Bientôt','Soon'],
+      add:['إضافة كلمة أو جملة','Ajouter un mot ou une phrase','Add a word or phrase'],
+      q:['ابحث في النصوص والترجمات','Rechercher dans les textes et traductions','Search texts and translations'],
+      all:['الكل','Tous','All'],
+      inc:['ترجمات ناقصة','Traductions manquantes','Missing translations'],
+      words:['كلمات','Mots','Words'],
+      phr:['جمل وتعابير','Phrases et expressions','Phrases & expressions'],
+      done:['متقنة','Maîtrisés','Mastered'],
+      rev:['تحتاج مراجعة','À revoir','Needs review'],
+      today:['أُضيفت اليوم','Ajoutés aujourd’hui','Added today'],
+      lanes:['حضور كل لغة في مفرداتك','Présence de chaque langue','Each language in your vocabulary'],
+      et:['ابدأ بأول كلمة','Commencez par un premier mot','Start with your first word'],
+      ed:['احفظ كلمة بلغة واحدة، وأضف باقي الترجمات متى شئت.','Enregistrez un mot dans une langue, ajoutez les autres traductions plus tard.','Save a word in one language and add the other translations whenever you like.'],
+      m0:['خطوة صغيرة اليوم، وطلاقة أكبر غدًا.','Un petit pas aujourd’hui, plus d’aisance demain.','A small step today, more fluency tomorrow.'],
+      m1:['راجع ما تعلمته، فالتكرار يصنع الفرق.','Révisez ce que vous savez : la répétition fait la différence.','Review what you know: repetition makes the difference.'],
+      m2:['كل كلمة تتعلمها اليوم تقرّبك من هدفك.','Chaque mot appris vous rapproche de votre but.','Every word you learn brings you closer to your goal.'],
+      save:['حفظ','Enregistrer','Save'],
+      cancel:['إلغاء','Annuler','Cancel'],
+      del:['حذف','Supprimer','Delete'],
+      sure:['تأكيد الحذف النهائي','Confirmer la suppression','Confirm delete'],
+      edit:['تعديل','Modifier','Edit'],
+      type:['النوع','Type','Type'],
+      t:[['كلمة','جملة','تعبير'],['Mot','Phrase','Expression'],['Word','Sentence','Expression']],
+      src:['اللغة الأصلية','Langue d’origine','Source language'],
+      pron:['النطق / الكتابة الصوتية','Prononciation','Pronunciation'],
+      alt:['كتابات بديلة (افصل بفاصلة)','Graphies alternatives (virgule)','Alternative spellings (comma)'],
+      dirl:['اتجاه الكتابة','Sens d’écriture','Writing direction'],
+      notes:['ملاحظات','Notes','Notes'],
+      ex:['مثال على الاستخدام','Exemple d’usage','Usage example'],
+      cat:['التصنيف','Catégorie','Category'],
+      diff:['الصعوبة','Difficulté','Difficulty'],
+      d:[['سهل','متوسط','صعب'],['Facile','Moyen','Difficile'],['Easy','Medium','Hard']],
+      stt:['الحالة','Statut','Status'],
+      s:[['جديد','قيد التعلم','يحتاج مراجعة','متقن'],['Nouveau','En cours','À revoir','Maîtrisé'],['New','Learning','Needs review','Mastered']],
+      mzh:['اكتبها بنفسك؛ لا يقترح التطبيق أي ترجمة مزابية.','Saisissez-la vous-même ; l’app ne suggère aucune traduction mozabite.','Enter it yourself; the app never suggests Mozabite translations.'],
+      opt:['اختياري','facultatif','optional'],
+      dup:['هذا العنصر موجود مسبقًا.','Cet élément existe déjà.','This item already exists.'],
+      req:['اكتب النص في حقل اللغة الأصلية.','Saisissez le texte dans la langue d’origine.','Fill in the text of the source language.'],
+      none:['لا نتائج مطابقة.','Aucun résultat.','No matching results.'],
+      miss:['ناقص:','Manque :','Missing:'],
+      ui:['لغة الواجهة','Langue de l’interface','Interface language'],
+      th:['المظهر','Thème','Theme'],
+      tt:[['تلقائي','فاتح','داكن'],['Auto','Clair','Sombre'],['Auto','Light','Dark']],
+      bk:['النسخ الاحتياطي والاستيراد','Sauvegarde et import','Backup and import'],
+      ex2:['تصدير (JSON): انسخ النص واحفظه في ملف','Export (JSON) : copiez et enregistrez dans un fichier','Export (JSON): copy and save to a file'],
+      im:['استيراد: الصق JSON هنا','Import : collez le JSON ici','Import: paste JSON here'],
+      ib:['استيراد','Importer','Import'],
+      ok:['تم استيراد %a وتجاهل %b مكررًا أو غير صالح.','%a importés, %b ignorés (doublons ou invalides).','Imported %a, skipped %b duplicate or invalid.'],
+      bad:['JSON غير صالح.','JSON invalide.','Invalid JSON.'],
+      loc:['بياناتك محفوظة محليًا على هذا الجهاز فقط.','Vos données restent sur cet appareil.','Your data stays on this device only.'],
+      nodb:['تعذّر التخزين الدائم في هذا المتصفح؛ ستُفقد البيانات عند الإغلاق.','Stockage persistant indisponible : les données seront perdues à la fermeture.','Persistent storage unavailable: data is lost on close.'],
+      pend:['جميع البيانات والإحصائيات والنتائج تُحسب مباشرة وبشكل حقيقي من قاعدة البيانات.','Tous les chiffres et statistiques sont calculés en temps réel.','All stats and quizzes use real saved data.']
+    };
+
+    Object.assign(D,{
+      tr:['ترجمة','Traduire','Translate'],
+      trl:['جارٍ الترجمة…','Traduction…','Translating…'],
+      tm:['ترجمة آلية — راجعها قبل الحفظ','Traduction automatique — à vérifier','Machine translation — review before saving'],
+      mach:['آلية','Auto','Auto'],
+      eoff:['لا يوجد اتصال بالإنترنت.','Pas de connexion Internet.','No Internet connection.'],
+      euns:['الترجمة الآلية غير متاحة لهذه اللغة (المزابية بالإدخال اليدوي).','Traduction automatique indisponible pour cette langue (mozabite : saisie manuelle).','Machine translation isn’t available for this language (Mozabite is manual).'],
+      elim:['تجاوزت حد الاستخدام، جرّب لاحقًا.','Limite d’utilisation atteinte, réessayez plus tard.','Usage limit reached, try again later.'],
+      efail:['تعذّرت الترجمة، حاول مرة أخرى.','Échec de la traduction, réessayez.','Translation failed, try again.'],
+      elong:['النص أطول من 500 حرف.','Texte de plus de 500 caractères.','Text longer than 500 characters.']
+    });
+
+    const S={items:[],completedDays:[],revisions:[],set:{ui:'ar',theme:'auto'},view:'dash',q:'',st:'',inc:false,conf:null,db:true,quizState:null};
+    const t=k=>{const v=D[k][IX[S.set.ui]];return v},tt=(k,i)=>D[k][IX[S.set.ui]][i];
+    const $=s=>document.querySelector(s);
+    const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f\u064B-\u065F\u0670]/g,'').toLowerCase().trim();
+    const ico={
+      dash:'<path d="M3 11l9-8 9 8v10H15v-7H9v7H3z"/>',
+      vocab:'<path d="M4 4h6a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4zM20 4h-6a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h7z"/>',
+      quiz:'<path d="M12 3l10 5-10 5L2 8zM6 11v5c3 3 9 3 12 0v-5"/>',
+      stats:'<path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/>',
+      set:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+      plus:'<path d="M12 5v14M5 12h14"/>',
+      flame:'<path d="M12 2c0 4-4 6-4 10a4 4 0 0 0 8 0c0-4-4-6-4-10z"/>'
+    };
+    const svg=n=>`<svg viewBox="0 0 24 24" aria-hidden="true">${ico[n]}</svg>`;
+
+    /* ---- Storage System (IndexedDB) ---- */
+    const DB=new Promise(r=>{
+      try{
+        const q=indexedDB.open('linguaflow',2);
+        q.onupgradeneeded=e=>{
+          const d=q.result;
+          if(!d.objectStoreNames.contains('items'))d.createObjectStore('items',{keyPath:'id'});
+          if(!d.objectStoreNames.contains('settings'))d.createObjectStore('settings',{keyPath:'k'});
+          if(!d.objectStoreNames.contains('completedDays'))d.createObjectStore('completedDays',{keyPath:'day'});
+          if(!d.objectStoreNames.contains('revisions'))d.createObjectStore('revisions',{keyPath:'itemId'});
+        };
+        q.onsuccess=()=>r(q.result);
+        q.onerror=()=>r(null);
+      }catch(e){r(null);}
+    });
+
+    async function run(store,mode,fn){
+      const d=await DB;if(!d){S.db=false;return null;}
+      return new Promise(res=>{
+        try{
+          const x=d.transaction(store,mode),q=fn(x.objectStore(store));
+          x.oncomplete=()=>res(q&&q.result);
+          x.onerror=()=>{S.db=false;res(null);};
+        }catch(e){S.db=false;res(null);}
+      });
+    }
+
+    const saveItem=i=>run('items','readwrite',s=>s.put(i));
+    const delItem=id=>run('items','readwrite',s=>s.delete(id));
+    const saveSet=()=>run('settings','readwrite',s=>s.put({k:'s',v:S.set}));
+    const saveCompletedDay=cd=>run('completedDays','readwrite',s=>s.put(cd));
+    const saveRevision=rv=>run('revisions','readwrite',s=>s.put(rv));
+
+    /* ---- Data Helpers & Real Streak Calculation ---- */
+    const tr=(it,l)=>it.translations.find(x=>x.language===l&&x.text);
+    const texts=it=>LG.map(l=>l===it.sourceLanguage?{language:l,text:it.sourceText}:tr(it,l)).filter(Boolean);
+    const miss=it=>LG.filter(l=>l!==it.sourceLanguage&&!tr(it,l));
+    const hay=it=>norm([it.sourceText,it.category,it.notes,...it.translations.flatMap(x=>[x.text,x.pronunciation,...(x.alternatives||[])])].join(' '));
+    const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2);
+
+    function getRealStreak(){
+      if(!S.completedDays || !S.completedDays.length) return { currentStreak: 0, longestStreak: 0 };
+      const dates = [...new Set(S.completedDays.map(d => d.date))].sort();
+      if(!dates.length) return { currentStreak: 0, longestStreak: 0 };
+      
+      let longest = 0, current = 0;
+      let prevDate = null;
+      const todayStr = new Date().toISOString().split('T')[0];
+      const yesterdayDate = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+      for(let i=0; i<dates.length; i++){
+        const currDate = dates[i];
+        if(!prevDate) {
+          current = 1;
+        } else {
+          const diff = (new Date(currDate) - new Date(prevDate)) / 86400000;
+          if(diff === 1) current++;
+          else if(diff > 1) current = 1;
+        }
+        if(current > longest) longest = current;
+        prevDate = currDate;
+      }
+
+      const lastDate = dates[dates.length - 1];
+      if(lastDate !== todayStr && lastDate !== yesterdayDate) {
+        current = 0;
+      }
+      return { currentStreak: current, longestStreak: longest };
+    }
+
+    function getCurrentLearningDay(){
+      const completedNums = S.completedDays.map(d=>d.day);
+      for(let i=1; i<=60; i++){
+        if(!completedNums.includes(i)) return i;
+      }
+      return 60;
+    }
+
+    /* ---- Main Application Renderer ---- */
+    function render(){
+      const u=S.set.ui,r=document.documentElement;r.lang=u;r.dir=u==='ar'?'rtl':'ltr';
+      if(S.set.theme==='auto')r.removeAttribute('data-theme');else r.dataset.theme=S.set.theme;
+      
+      const nav=[['dash'],['vocab'],['quiz'],['stats'],['set']].map(([k])=>`<button class="nb ${S.view===k?'on':''}" data-v="${k}">${svg(k)}<span>${t(k)}</span></button>`).join('');
+      
+      const streakInfo = getRealStreak();
+      const currentDay = getCurrentLearningDay();
+
+      const topBar = `
+        <div class="top-streak-container">
+          <div class="streak-indicator">
+            ${svg('flame')} 🔥 سلسلة التعلم: ${streakInfo.currentStreak} أيام
+          </div>
+          <div class="hint">اليوم الحالي: <b>الدرس ${currentDay}</b> / 60</div>
+          <div class="streak-actions">
+            <button class="btn g sm" data-a="open-stats">إحصائياتي</button>
+            <button class="btn g sm" data-a="open-quiz">اختبر نفسي</button>
+            <button class="btn g sm" data-a="open-rev">كلمات تحتاج مراجعة (${S.revisions.filter(r=>r.isDue).length})</button>
+          </div>
+        </div>
+      `;
+
+      $('#app').innerHTML=`
+        <nav aria-label="LinguaFlow"><div class="logo">LinguaFlow</div>${nav}</nav>
+        <main>
+          ${topBar}
+          ${S.db?'':`<div class="banner">${t('nodb')}</div>`}
+          ${{dash,vocab,quiz,stats,set:settings}[S.view]()}
+        </main>
+        ${S.view==='vocab'&&S.items.length?`<button class="btn fab" data-a="add">${svg('plus')} ${t('add')}</button>`:''}
+      `;
+    }
+
+    /* ---- Page Views ---- */
+    function dash(){
+      const n=S.items.length,w=S.items.filter(i=>i.type==='word').length,p=n-w;
+      const currentDay = getCurrentLearningDay();
+      const isDayDone = S.completedDays.some(d => d.day === currentDay);
+      const dayItems = S.items.filter(i => i.learningDay === currentDay);
+
+      return `
+        <h1>MOZABITE – Learn & Connect</h1>
+        
+        <div class="card day-banner">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px">
+            <div>
+              <h2 style="margin:0">اليوم التعليمي: الدرس ${currentDay}</h2>
+              <span class="hint">تعلم ~10 كلمات أو جمل ميزابية يومياً من مواضيع الحياة والتواصل</span>
+            </div>
+            ${isDayDone ? `<span class="day-status-pill">✓ تم إكمال هذا اليوم</span>` : ''}
+          </div>
+
+          <div class="bar2">
+            <button class="btn" data-a="add-day-item">+ إضافة كلمة/جملة لليوم ${currentDay}</button>
+            ${!isDayDone ? `<button class="btn d" data-a="complete-day" data-day="${currentDay}">انتهيت من اليوم</button>` : ''}
+          </div>
+
+          <div style="margin-top:14px">
+            <b>محتوى الدرس ${currentDay} (${dayItems.length} عناصر):</b>
+            ${dayItems.length === 0 ? `<p class="hint">لم تقم بأي إضافة لهذا اليوم بعد. أضف الكلمة مع ترجمتها الميزابية المؤكدة.</p>` : 
+              `<div class="grid" style="margin-top:10px">${dayItems.map(it=>`<div class="card" style="padding:10px"><b>${esc(it.sourceText)}</b><br><span style="color:var(--c-mz)">${esc(tr(it,'mz')?.text || 'بدون ترجمة ميزابية')}</span></div>`).join('')}</div>`
+            }
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card st"><b>${w}</b><span>كلمات مفردة</span></div>
+          <div class="card st"><b>${p}</b><span>جمل وتعابير</span></div>
+          <div class="card st"><b>${S.completedDays.length}</b><span>أيام مكتملة</span></div>
+          <div class="card st"><b>${S.revisions.length}</b><span>عناصر للمراجعة</span></div>
+        </div>
+      `;
+    }
+
+    function vocab(){
+      const q=norm(S.q);
+      let L=S.items.filter(i=>(!q||hay(i).includes(q))&&(!S.st||i.status===S.st)&&(!S.inc||miss(i).length)).sort((a,b)=>b.createdAt-a.createdAt);
+      const head=`<h1>${t('vocab')}</h1><div class="bar2"><input id="q" type="search" dir="auto" placeholder="${t('q')}" value="${esc(S.q)}" aria-label="${t('q')}"><select id="st"><option value="">${t('all')}</option>${['new','learning','review','mastered'].map((k,i)=>`<option value="${k}" ${S.st===k?'selected':''}>${tt('s',i)}</option>`).join('')}</select><label class="chip" style="display:flex;align-items:center;gap:6px;min-height:44px"><input type="checkbox" id="inc" ${S.inc?'checked':''} style="width:auto;min-height:0"> ${t('inc')}</label></div>`;
+      if(!S.items.length)return head+`<div class="card empty"><h2>${t('et')}</h2><p class="hint">${t('ed')}</p><button class="btn" data-a="add">${svg('plus')} ${t('add')}</button></div>`;
+      return head+(L.length?L.map(card).join(''):`<p class="hint">${t('none')}</p>`);
+    }
+
+    function card(it){
+      const rows=texts(it).map(x=>{const dir=x.dir||DIR[x.language];return`<div class="tr"><span class="ln" style="color:var(--c-${x.language})">${NM[S.set.ui][x.language]}</span><div><div class="tx" lang="${x.language}" dir="${dir}">${esc(x.text)}</div>${x.pronunciation?`<div class="pn" dir="ltr">/${esc(x.pronunciation)}/</div>`:''}${(x.alternatives||[]).length?`<div class="pn" dir="${dir}">${x.alternatives.map(esc).join(' · ')}</div>`:''}</div></div>`}).join('');
+      const ms=miss(it),ix=['new','learning','review','mastered'].indexOf(it.status);
+      return`<div class="card it"><div>${rows}</div>${it.notes?`<p class="hint" dir="auto">${esc(it.notes)}</p>`:''}<div class="row"><span class="chip">${tt('t',['word','sentence','expression'].indexOf(it.type))}</span><span class="chip">${tt('s',ix)}</span>${it.learningDay?`<span class="chip w">الدرس ${it.learningDay}</span>`:''}${it.category?`<span class="chip" dir="auto">${esc(it.category)}</span>`:''}${ms.length?`<span class="chip w">${t('miss')} ${ms.map(l=>NM[S.set.ui][l]).join('، ')}</span>`:''}
+      <span style="margin-inline-start:auto;display:flex;gap:8px">${S.conf===it.id?`<button class="btn d" data-a="del" data-id="${it.id}">${t('sure')}</button><button class="btn g" data-a="nc">${t('cancel')}</button>`:`<button class="btn g" data-a="edit" data-id="${it.id}">${t('edit')}</button><button class="btn g" data-a="cd" data-id="${it.id}">${t('del')}</button>`}</span></div></div>`;
+    }
+
+    function quiz(){
+      if(!S.quizState) {
+        return `
+          <h1>${t('quiz')}</h1>
+          <div class="card f">
+            <h2>إعداد الاختبار الذاتي</h2>
+            <div>
+              <label>نطاق الاختبار:</label>
+              <select id="qz-scope">
+                <option value="all">جميع المفردات والجمل المحفوظة</option>
+                <option value="day">درس محدد</option>
+                <option value="rev">عناصر تحتاج مراجعة فقط</option>
+              </select>
+            </div>
+            <div id="qz-day-select" style="display:none;margin-top:10px">
+              <label>اختر اليوم التعليمي:</label>
+              <select id="qz-day-num">
+                ${Array.from({length:60},(_,i)=>`<option value="${i+1}">اليوم ${i+1}</option>`).join('')}
+              </select>
+            </div>
+            <div style="margin-top:10px">
+              <label>نوع المحتوى:</label>
+              <select id="qz-type">
+                <option value="both">كلمات وجمل</option>
+                <option value="word">كلمات فقط</option>
+                <option value="sentence">جمل فقط</option>
+              </select>
+            </div>
+            <div style="margin-top:10px">
+              <label>عدد الأسئلة:</label>
+              <select id="qz-count">
+                <option value="5">5 أسئلة</option>
+                <option value="10">10 أسئلة</option>
+                <option value="20">20 سؤال</option>
+                <option value="all">كل المتاح</option>
+              </select>
+            </div>
+            <button class="btn" style="margin-top:16px" data-a="start-quiz">ابدأ الاختبار</button>
+          </div>
+        `;
+      }
+
+      const { questions, currentIndex, answers, finished } = S.quizState;
+
+      if(finished) {
+        const total = questions.length;
+        const correct = answers.filter(a=>a.isCorrect).length;
+        const incorrect = total - correct;
+        const percent = total > 0 ? Math.round((correct / total) * 100) : 0;
+
+        return `
+          <h1>نتيجة الاختبار الذاتي</h1>
+          <div class="card">
+            <h2>النتيجة النهائية: ${percent}%</h2>
+            <div class="grid" style="margin-bottom:16px">
+              <div class="card st"><b>${total}</b><span>إجمالي الأسئلة</span></div>
+              <div class="card st" style="color:var(--ok)"><b>${correct}</b><span>إجابات صحيحة</span></div>
+              <div class="card st" style="color:var(--or)"><b>${incorrect}</b><span>إجابات خاطئة</span></div>
+            </div>
+
+            ${incorrect > 0 ? `
+              <h3>الأخطاء المصححة (تم جدولتها للمراجعة تلقائيًا):</h3>
+              <div style="display:grid;gap:8px">
+                ${answers.filter(a=>!a.isCorrect).map(a=>`
+                  <div class="card rev-badge" style="padding:10px">
+                    <b>${esc(a.item.sourceText)}</b><br>
+                    <span class="hint">إجابتك: ${esc(a.userAns || '(فارغ)')}</span><br>
+                    <span style="color:var(--ok)">الترجمة المعتمدة المحفوظة: ${esc(a.correctAns)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            <button class="btn" style="margin-top:16px" data-a="reset-quiz">إغلاق الاختبار</button>
+          </div>
+        `;
+      }
+
+      const q = questions[currentIndex];
+      return `
+        <h1>اختبر نفسك (${currentIndex + 1} / ${questions.length})</h1>
+        <div class="quiz-card">
+          <div class="hint">أدخل الترجمة المزابية المعتمدة للجملة أو الكلمة التالية:</div>
+          <div class="quiz-q-title" lang="${q.sourceLanguage}">${esc(q.sourceText)}</div>
+          <input type="text" id="qz-user-input" dir="ltr" placeholder="اكتب الترجمة بالمزابية هنا..." style="width:100%;margin:12px 0;padding:12px;border:1px solid var(--bd);border-radius:10px">
+          <button class="btn" data-a="submit-qz-ans">تأكيد الإجابة</button>
+        </div>
+      `;
+    }
+
+    function stats(){
+      const streakInfo = getRealStreak();
+      const totalWords = S.items.filter(i=>i.type==='word').length;
+      const totalSentences = S.items.filter(i=>i.type==='sentence'||i.type==='expression').length;
+      const dueRevisions = S.revisions.filter(r=>r.isDue).length;
+
+      return `
+        <h1>إحصائياتي الحقيقية</h1>
+        <div class="grid" style="margin-bottom:16px">
+          <div class="card st"><b>${totalWords}</b><span>إجمالي الكلمات</span></div>
+          <div class="card st"><b>${totalSentences}</b><span>إجمالي الجمل</span></div>
+          <div class="card st"><b>${S.completedDays.length}</b><span>الأيام المكتملة</span></div>
+          <div class="card st"><b>${streakInfo.currentStreak}</b><span>السلسلة الحالية</span></div>
+          <div class="card st"><b>${streakInfo.longestStreak}</b><span>أطول سلسلة</span></div>
+          <div class="card st"><b>${dueRevisions}</b><span>عناصر متبقية للمراجعة</span></div>
+        </div>
+        <p class="hint">${t('pend')}</p>
+      `;
+    }
+
+    function settings(){
+      const o=(a,v)=>a.map((x,i)=>`<option value="${x[0]}" ${x[0]===v?'selected':''}>${x[1]}</option>`).join('');
+      return `
+        <h1>${t('set')}</h1>
+        <div class="card f" style="display:grid;gap:14px">
+          <div><label>${t('ui')}</label><select id="ui">${o([['ar','العربية'],['fr','Français'],['en','English']],S.set.ui)}</select></div>
+          <div><label>${t('th')}</label><select id="th">${o(['auto','light','dark'].map((k,i)=>[k,tt('tt',i)]),S.set.theme)}</select></div>
+          <p class="hint">${t('loc')}</p>
+        </div>
+        <h2>تثبيت التطبيق PWA</h2>
+        <div class="card">
+          <p class="hint">يمكنك تثبيت التطبيق على هاتفك المحمول عبر متصفح Chrome (قائمة المتصفح -> التثبيت / Add to Home screen).</p>
+          <button class="btn g" id="btn-install-pwa" style="display:none">تثبيت التطبيق الآن</button>
+        </div>
+        <h2>${t('bk')}</h2>
+        <div class="card f" style="display:grid;gap:10px">
+          <label>${t('ex2')}</label>
+          <textarea id="exp" rows="4" readonly dir="ltr">${esc(JSON.stringify({app:'linguaflow',version:2,items:S.items,completedDays:S.completedDays,revisions:S.revisions}))}</textarea>
+          <div><button class="btn g" data-a="dl">JSON ⬇</button></div>
+          <label>${t('im')}</label>
+          <textarea id="imp" rows="4" dir="ltr"></textarea>
+          <div><button class="btn" data-a="imp">${t('ib')}</button></div>
+          <p id="impm" class="hint" role="status"></p>
+        </div>
+      `;
+    }
+
+    /* ---- Modals & Data Handling ---- */
+    function openForm(id, defaultDay){
+      const it=S.items.find(i=>i.id===id)||{type:'word',sourceLanguage:'ar',sourceText:'',translations:[],status:'new',difficulty:1,learningDay:defaultDay||getCurrentLearningDay()};
+      const blocks=LG.map(l=>{
+        const x=l===it.sourceLanguage?{text:it.sourceText,...(it.srcMeta||{})}:tr(it,l)||{};
+        const d=x.dir||DIR[l];
+        return `<div class="lb" data-l="${l}"${x.source==='machine'&&!x.verified?' data-machine="1"':''}><label style="color:var(--c-${l});font-weight:600">${NM[S.set.ui][l]} <span class="hint">${l===it.sourceLanguage?'':'('+t('opt')+')'}</span></label><div style="display:flex;gap:8px"><input class="tx" lang="${l}" dir="${d}" value="${esc(x.text||'')}" style="flex:1;border:1px solid var(--bd);border-radius:10px;padding:10px;min-height:44px;background:var(--sf)">${l==='fr'||l==='en'?`<button type="button" class="btn g" data-a="tr">${t('tr')}</button>`:''}</div><p class="hint mh">${x.source==='machine'&&!x.verified?t('tm'):''}</p>${l==='mz'?`<p class="hint">${t('mzh')}</p>`:''}<details><summary>${t('pron')} / ${t('alt')}</summary><div class="two" style="margin-top:8px"><input class="pn" dir="ltr" placeholder="${t('pron')}" value="${esc(x.pronunciation||'')}"><input class="al" dir="${d}" lang="${l}" placeholder="${t('alt')}" value="${esc((x.alternatives||[]).join(', '))}">${l==='mz'?`<select class="dr" aria-label="${t('dirl')}"><option value="ltr" ${d==='ltr'?'selected':''}>LTR</option><option value="rtl" ${d==='rtl'?'selected':''}>RTL</option></select>`:''}</div></details></div>`;
+      }).join('');
+      const o=(arr,v)=>arr.map((x,i)=>`<option value="${i}" ${i===v?'selected':''}>${x}</option>`).join('');
+
+      $('#dlg').innerHTML=`<div class="dl f" data-id="${it.id||''}"><h2 style="margin:0">${t('add')}</h2><div class="two"><div><label>${t('type')}</label><select id="ft">${o(D.t[IX[S.set.ui]],['word','sentence','expression'].indexOf(it.type))}</select></div><div><label>اليوم التعليمي (1-60)</label><input type="number" id="fday" min="1" max="60" value="${it.learningDay||getCurrentLearningDay()}"></div></div>${blocks}
+      <div class="two"><div><label>${t('cat')}</label><input id="fc" dir="auto" value="${esc(it.category||'')}"></div><div><label>${t('stt')}</label><select id="fz">${['new','learning','review','mastered'].map((k,i)=>`<option value="${k}" ${it.status===k?'selected':''}>${tt('s',i)}</option>`).join('')}</select></div></div><div><label>${t('notes')}</label><textarea id="fn" dir="auto" rows="2">${esc(it.notes||'')}</textarea></div><div class="err" id="fer" role="alert"></div><div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn g" data-a="close">${t('cancel')}</button><button class="btn" data-a="sv">${t('save')}</button></div></div>`;
+      $('#dlg').showModal();
+    }
+
+    async function submit(){
+      const f=$('#dlg .dl'),id=f.dataset.id,sl='ar';
+      let src='',srcMeta,trs=[];
+      f.querySelectorAll('.lb').forEach(b=>{
+        const mc=b.dataset.machine==='1',l=b.dataset.l,text=b.querySelector('.tx').value.trim(),dir=b.querySelector('.dr')?.value||DIR[l],pr=b.querySelector('.pn').value.trim(),al=b.querySelector('.al').value.split(',').map(s=>s.trim()).filter(Boolean),meta={pronunciation:pr,alternatives:al,dir};
+        if(l===sl){src=text;srcMeta=meta;}else if(text)trs.push({language:l,text,source:mc?'machine':'manual',verified:!mc,...meta});
+      });
+      const err=m=>$('#fer').textContent=m;
+      if(!src)return err(t('req'));
+      if(S.items.some(i=>i.id!==id&&i.sourceLanguage===sl&&norm(i.sourceText)===norm(src)))return err(t('dup'));
+
+      const old=S.items.find(i=>i.id===id),now=Date.now(),ty=['word','sentence','expression'][+$('#ft').value];
+      const dayNum = parseInt($('#fday').value) || getCurrentLearningDay();
+
+      const it={id:id||uid(),type:ty,sourceLanguage:sl,sourceText:src,srcMeta,translations:trs,category:$('#fc').value.trim(),learningDay:dayNum,notes:$('#fn').value.trim(),status:$('#fz').value,createdAt:old?.createdAt||now,updatedAt:now};
+      S.items=old?S.items.map(i=>i.id===id?it:i):[it,...S.items];
+      await saveItem(it);
+      $('#dlg').close();
+      render();
+    }
+
+    /* ---- Quiz Engine Execution ---- */
+    function startQuiz(){
+      const scope = $('#qz-scope').value;
+      const type = $('#qz-type').value;
+      const countVal = $('#qz-count').value;
+
+      let candidates = S.items.filter(i=>tr(i,'mz')?.text);
+      if(scope === 'day'){
+        const day = parseInt($('#qz-day-num').value);
+        candidates = candidates.filter(i=>i.learningDay === day);
+      } else if(scope === 'rev'){
+        const dueIds = S.revisions.filter(r=>r.isDue).map(r=>r.itemId);
+        candidates = candidates.filter(i=>dueIds.includes(i.id));
+      }
+
+      if(type === 'word') candidates = candidates.filter(i=>i.type === 'word');
+      else if(type === 'sentence') candidates = candidates.filter(i=>i.type === 'sentence' || i.type === 'expression');
+
+      if(!candidates.length){
+        alert('لا توجد عناصر تطابق الفلاتر المحددة وتضم ترجمة ميزابية مؤكدة.');
+        return;
+      }
+
+      candidates.sort(()=>0.5 - Math.random());
+      const max = countVal === 'all' ? candidates.length : Math.min(parseInt(countVal), candidates.length);
+
+      S.quizState = {
+        questions: candidates.slice(0, max),
+        currentIndex: 0,
+        answers: [],
+        finished: false
+      };
+      render();
+    }
+
+    async function submitQuizAnswer(){
+      const userAns = $('#qz-user-input').value;
+      const q = S.quizState.questions[S.quizState.currentIndex];
+      const mzObj = tr(q, 'mz');
+      const validAnswers = [mzObj.text, ...(mzObj.alternatives || [])].map(norm);
+
+      const isCorrect = validAnswers.includes(norm(userAns));
+
+      let rev = S.revisions.find(r=>r.itemId === q.id) || { itemId: q.id, incorrectCount: 0, intervalDays: 1, lastReviewed: null, isDue: false };
+      if(!isCorrect) {
+        rev.incorrectCount++;
+        rev.intervalDays = 1;
+        rev.isDue = true;
+      } else {
+        rev.intervalDays = rev.intervalDays ? rev.intervalDays * 2 : 2;
+        rev.isDue = false;
+      }
+      rev.lastReviewed = new Date().toISOString();
+
+      S.revisions = S.revisions.filter(r=>r.itemId !== q.id).concat(rev);
+      await saveRevision(rev);
+
+      S.quizState.answers.push({ item: q, userAns, correctAns: mzObj.text, isCorrect });
+
+      if(S.quizState.currentIndex + 1 < S.quizState.questions.length) {
+        S.quizState.currentIndex++;
+      } else {
+        S.quizState.finished = true;
+      }
+      render();
+    }
+
+    /* ---- Event Listeners ---- */
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      const btn = $('#btn-install-pwa');
+      if(btn) {
+        btn.style.display = 'inline-flex';
+        btn.onclick = () => e.prompt();
+      }
+    });
+
+    document.addEventListener('click', async e => {
+      const b = e.target.closest('[data-v],[data-a]');
+      if(b && b.dataset.v){
+        S.view=b.dataset.v; location.hash=S.view; return render();
+      }
+      if(!b) return;
+      const a=b.dataset.a, id=b.dataset.id;
+
+      if(a==='add') openForm(null, getCurrentLearningDay());
+      else if(a==='add-day-item') openForm(null, getCurrentLearningDay());
+      else if(a==='edit') openForm(id);
+      else if(a==='close') $('#dlg').close();
+      else if(a==='sv') submit();
+      else if(a==='open-stats') { S.view='stats'; render(); }
+      else if(a==='open-quiz') { S.view='quiz'; S.quizState=null; render(); }
+      else if(a==='open-rev') { S.view='quiz'; S.quizState=null; render(); }
+      else if(a==='complete-day'){
+        const day = parseInt(b.dataset.day);
+        const todayStr = new Date().toISOString().split('T')[0];
+        if(!S.completedDays.some(d=>d.day===day)){
+          const record = { day, date: todayStr };
+          S.completedDays.push(record);
+          await saveCompletedDay(record);
+          render();
+        }
+      }
+      else if(a==='start-quiz') startQuiz();
+      else if(a==='submit-qz-ans') submitQuizAnswer();
+      else if(a==='reset-quiz') { S.quizState = null; render(); }
+      else if(a==='del'){
+        S.items=S.items.filter(i=>i.id!==id); S.conf=null; await delItem(id); render();
+      }
+      else if(a==='cd'){ S.conf=id; render(); }
+      else if(a==='nc'){ S.conf=null; render(); }
+    });
+
+    document.addEventListener('change', async e => {
+      if(e.target.id === 'qz-scope'){
+        const daySelect = $('#qz-day-select');
+        if(daySelect) daySelect.style.display = e.target.value === 'day' ? 'block' : 'none';
+      } else if(e.target.id === 'ui'){
+        S.set.ui = e.target.value;
+        await saveSet();
+        render();
+      } else if(e.target.id === 'th'){
+        S.set.theme = e.target.value;
+        await saveSet();
+        render();
+      }
+    });
+
+    /* ---- App Initialization ---- */
+    (async()=>{
+      const s=await run('settings','readonly',x=>x.get('s')); if(s&&s.v) Object.assign(S.set,s.v);
+      const allItems=await run('items','readonly',x=>x.getAll()); if(allItems) S.items=allItems;
+      const allComp=await run('completedDays','readonly',x=>x.getAll()); if(allComp) S.completedDays=allComp;
+      const allRev=await run('revisions','readonly',x=>x.getAll()); if(allRev) S.revisions=allRev;
+
+      const h=location.hash.slice(1);
+      if(['dash','vocab','quiz','stats','set'].includes(h)) S.view=h;
+      render();
+    })();
+
+    if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    }
+  </script>
+</body>
+</html>
