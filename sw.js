@@ -23,8 +23,6 @@ self.addEventListener('fetch',e=>{
     }
     return;
   }
-  /* config + cloud layer: network first, so a corrected firebase-config.js is picked up immediately (never a stale placeholder copy) */
-  if(u.pathname.endsWith('/firebase-config.js')||u.pathname.endsWith('/cloud.js')){e.respondWith(fetch(r).then(res=>{if(res.ok){const k=res.clone();caches.open(CACHE).then(c=>c.put(r,k))}return res}).catch(()=>caches.match(r)));return}
   if(r.mode==='navigate'){
     e.respondWith(fetch(r).then(res=>{if(res.ok){const k=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',k))}return res}).catch(()=>caches.match('./index.html')));
     return;
