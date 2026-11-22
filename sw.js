@@ -1,5 +1,5 @@
 /* LinguaFlow service worker. Bump VERSION whenever any app file changes. */
-const VERSION='v5',CACHE='linguaflow-'+VERSION;
+const VERSION='v6',CACHE='linguaflow-'+VERSION;
 const SHELL=['./','./index.html','./styles.css','./app.js','./cloud.js','./firebase-config.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 self.addEventListener('install',e=>{
   /* tolerant precache: one missing file must not break installation */
@@ -23,6 +23,8 @@ self.addEventListener('fetch',e=>{
     }
     return;
   }
+  /* config + cloud layer: network first, so a corrected firebase-config.js is picked up immediately (never a stale placeholder copy) */
+  if(u.pathname.endsWith('/firebase-config.js')||u.pathname.endsWith('/cloud.js')){e.respondWith(fetch(r).then(res=>{if(res.ok){const k=res.clone();caches.open(CACHE).then(c=>c.put(r,k))}return res}).catch(()=>caches.match(r)));return}
   if(r.mode==='navigate'){
     e.respondWith(fetch(r).then(res=>{if(res.ok){const k=res.clone();caches.open(CACHE).then(c=>c.put('./index.html',k))}return res}).catch(()=>caches.match('./index.html')));
     return;

@@ -1,4 +1,4 @@
-/* LinguaFlow cloud layer (ES module). Shared vocabulary = Firestore collection "vocab" (public read, admin-only write).
+/* LinguaFlow cloud layer (ES module). Shared vocabulary = Firestore collection "vocab" (public read, write for any signed-in Google account).
    Every failure is reported to app.js with a precise status so the UI can show a useful diagnostic. */
 const G='https://www.gstatic.com/firebasejs/10.12.2/';
 const cfg=window.FIREBASE_CONFIG||{},pid=cfg.projectId||'';
@@ -24,9 +24,9 @@ if(c&&(c.ut||0)>data.ut)return{ok:true,newer:true};
 tx.set(r,{...data,deleted:false,updatedAt:F.serverTimestamp()});return{ok:true}}),new Promise((_,j)=>setTimeout(()=>j({code:'timeout'}),20000))])}
 catch(e){return{ok:false,code:(e&&e.code)||'failed'}}},
 async signIn(){autherr='';try{await U.signInWithPopup(auth,new U.GoogleAuthProvider())}catch(e){autherr=e.code||'failed';emit()}},signOut(){return U.signOut(auth)}};
-U.onAuthStateChanged(auth,async u=>{if(!u){user=null;return emit()}
-let admin=false,checked=false;try{admin=(await F.getDoc(F.doc(db,'admins',u.uid))).exists();checked=true}catch(e){}
-user={uid:u.uid,name:u.displayName||u.email||'',admin,checked};emit()});
+/* shared dictionary: every signed-in Google account is a full contributor (no admin list). "admin" stays in the user object only as the flag app.js reads to mean "may write". */
+U.onAuthStateChanged(auth,u=>{if(!u){user=null;return emit()}
+user={uid:u.uid,name:u.displayName||u.email||'',admin:true,checked:true};emit()});
 F.onSnapshot(F.collection(db,'vocab'),s=>{docs=s.docs.map(d=>{const x=d.data(),sv=k=>typeof x[k]==='string'?x[k]:null;return{key:d.id,arabic:x.arabic,mz:x.mz||'',fr:sv('fr'),en:sv('en'),mzAlt:Array.isArray(x.mzAlt)?x.mzAlt:[],mzPron:x.mzPron||'',mzDir:x.mzDir,day:Number.isInteger(x.day)?x.day:null,deleted:!!x.deleted,ut:x.ut||0}});
 st=navigator.onLine?'ok':'offline';err='';emit()},e=>{const c=e.code||'failed';st=c==='permission-denied'?'perm':(c==='not-found'||/does not exist/i.test(e.message||''))?'nodb':'error';err=c;emit()});
 window.addEventListener('offline',()=>{if(st==='ok'){st='offline';emit()}});window.addEventListener('online',()=>{if(st==='offline'){st='ok';emit()}});
