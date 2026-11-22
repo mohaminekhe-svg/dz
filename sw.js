@@ -1,6 +1,6 @@
 /* LinguaFlow service worker. Bump VERSION whenever any app file changes. */
-const VERSION='v2',CACHE='linguaflow-'+VERSION;
-const SHELL=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const VERSION='v4',CACHE='linguaflow-'+VERSION;
+const SHELL=['./','./index.html','./styles.css','./app.js','./cloud.js','./firebase-config.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 self.addEventListener('install',e=>{
   /* tolerant precache: one missing file must not break installation */
   e.waitUntil(caches.open(CACHE).then(c=>Promise.all(SHELL.map(u=>c.add(u).catch(()=>{})))));
@@ -14,8 +14,8 @@ self.addEventListener('fetch',e=>{
   const r=e.request;if(r.method!=='GET')return;
   const u=new URL(r.url);
   if(u.origin!==location.origin){
-    /* Google Fonts: cache for offline; every other cross-origin call (e.g. the optional MyMemory translation) always uses the network */
-    if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com'){
+    /* Google Fonts and the Firebase SDK modules: cache for offline; every other cross-origin call (e.g. the optional MyMemory translation) always uses the network */
+    if(u.hostname==='fonts.googleapis.com'||u.hostname==='fonts.gstatic.com'||(u.hostname==='www.gstatic.com'&&u.pathname.startsWith('/firebasejs/'))){
       e.respondWith(caches.open(CACHE).then(c=>c.match(r).then(h=>{
         const n=fetch(r).then(res=>{if(res.ok||res.type==='opaque')c.put(r,res.clone());return res}).catch(()=>h);
         return h||n;
